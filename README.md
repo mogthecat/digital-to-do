@@ -30,13 +30,13 @@ Each button press is also printed in the terminal, which helps when debugging.
 - Raspberry Pi Pico 2 W
 > [!NOTE]
 > Any microcontroller with network access and MicroPython support should be acceptable, but the pin numbers will need changing.
-- Adafruit Sharp Memory Display Breakout - 2.7" 400x240 Monochrome
+- Adafruit Sharp Memory Display 2.7" 400x240 Monochrome
 > [!NOTE]
 > The screen only needs power when it changes, and the picture stays on it without refreshing. The driver for it is `sharp_memory_display.py` in this repository.
 - 3 push buttons
 - Breadboard and pin-to-pin wires
 > [!WARNING]
-> Many full-size breadboards have power rails that are split in the middle (look for a gap in the red and blue lines). If the screen stays blank or the buttons do nothing, check that both halves of the rails are joined.
+> Many full-size breadboards have power rails that are split in the middle. If the screen stays blank or the buttons do nothing, check that both halves of the rails are joined. This is a problem I encountered and spent way too long troubleshooting. 
 - A Todoist account and API token.
 
 ## Pin Layout
@@ -61,16 +61,16 @@ The text uses CMU Serif, converted into bitmap fonts (`font_header.py`, `font_bo
 ## Photographs
 
 ![Full project](images/full-project.jpg)
-Picture 1: Full project, with the Pico 2 W, Sharp Memory Display and three buttons.
+Picture 1: Full project with the Pico 2 W, Sharp Memory Display and three buttons.
 
 ![Task list](images/task-list.jpg)
-Picture 2: The Todoist Inbox on the display, with the third task highlighted.
+Picture 2: The Todoist Inbox on the display with the third task highlighted.
 
 ![Buttons](images/buttons.jpg)
-Picture 3: The three buttons wired to GND, and the "All done!" screen when the Inbox is empty.
+Picture 3: Left side view.
 
 ![Pico connections](images/pico-connections.jpg)
-Picture 4: Wire connections to the Raspberry Pi Pico 2 W.
+Picture 4: Right side view.
 
 ## Footnote
 
