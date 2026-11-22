@@ -7,14 +7,20 @@ A to-do list display that fetches tasks from the Todoist API and shows them on a
 1. Flash MicroPython onto the Pico 2 W (the `RPI_PICO2_W` build already includes the `requests` and `network` modules this uses).
 2. Copy `config_example.py` to `config.py` and fill in your Wi-Fi name, Wi-Fi password and Todoist API token (Todoist > Settings > Integrations > Developer).
 3. Set the circuit up physically, making sure the right pins are correctly placed (see the pin layout below).
-4. Copy every `.py` file in the top folder onto the Pico, e.g. with `mpremote`:
+4. Copy the three files the Pico needs onto it and restart it, e.g. with `mpremote`:
    ```
-   mpremote cp *.py :
+   mpremote cp main.py fonts.py config.py : + reset
    ```
-5. Reset the Pico. `main.py` runs automatically on boot, connects to Wi-Fi and shows your Todoist Inbox. It re-fetches the list every minute.
+5. `main.py` runs automatically on boot, connects to Wi-Fi and shows your Todoist Inbox. It re-fetches the list every minute.
 
-> [!TIP]
-> Run `mpremote run test_display.py` first to check the screen is wired correctly before adding Wi-Fi and Todoist.
+### Files
+
+| File | What it is |
+| --- | --- |
+| `main.py` | Everything that runs on the Pico: display driver, font drawing, Wi-Fi, Todoist and buttons |
+| `fonts.py` | Bitmap font data (generated, don't edit by hand) |
+| `config_example.py` | Template for `config.py`, which holds your Wi-Fi details and Todoist token and is never uploaded to GitHub |
+| `tools/make_fonts.py` | Runs on your computer to regenerate `fonts.py` |
 
 ### Buttons
 
@@ -32,7 +38,7 @@ Each button press is also printed in the terminal, which helps when debugging.
 > Any microcontroller with network access and MicroPython support should be acceptable, but the pin numbers will need changing.
 - Adafruit Sharp Memory Display 2.7" 400x240 Monochrome
 > [!NOTE]
-> The screen only needs power when it changes, and the picture stays on it without refreshing. The driver for it is `sharp_memory_display.py` in this repository.
+> The screen only needs power when it changes, and the picture stays on it without refreshing. The driver for it is the `Display` class in `main.py`.
 - 3 push buttons
 - Breadboard and pin-to-pin wires
 > [!WARNING]
@@ -56,7 +62,7 @@ The three buttons connect GP13, GP14 and GP15 to GND. The Pico's internal pull-u
 
 ## Fonts
 
-The text uses CMU Serif, converted into bitmap fonts (`font_header.py`, `font_body.py`, `font_small.py`) by `tools/make_fonts.py`. To change the font or size, edit `FONTS` in that script, run it on your computer with `python3 tools/make_fonts.py` (needs Pillow), and copy the new `font_*.py` files onto the Pico.
+The text uses CMU Serif, converted into bitmap fonts in `fonts.py` by `tools/make_fonts.py`. To change the font or size, edit `FONTS` in that script, run it on your computer with `python3 tools/make_fonts.py` (needs Pillow), and copy the new `fonts.py` onto the Pico.
 
 ## Photographs
 
