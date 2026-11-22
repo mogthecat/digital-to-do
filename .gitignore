@@ -1,0 +1,6 @@
+# Secrets: Wi-Fi password and Todoist API token
+config.py
+
+# macOS / Python clutter
+.DS_Store
+__pycache__/
