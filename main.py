@@ -34,7 +34,7 @@ def api(method, path):
     body = r.content  # reads the whole reply and closes the connection
     if r.status_code >= 300:
         raise OSError("Todoist HTTP %d" % r.status_code)
-    return r.json() if body else None
+    return r.json() if body else {}
 
 
 class Display(framebuf.FrameBuffer):
@@ -57,7 +57,11 @@ class Display(framebuf.FrameBuffer):
         self.busy = False
         # VCOM must flip at least once a second or the LCD is damaged over
         # time; a timer keeps doing it even while a network request blocks.
-        self.timer = machine.Timer(period=500, callback=lambda t: self.busy or self._send(self.hold, 0))
+        self.timer = machine.Timer(-1, period=500, callback=self._keep_alive)  # -1 = software timer
+
+    def _keep_alive(self, _timer):
+        if not self.busy:  # a frame being sent flips VCOM by itself
+            self._send(self.hold, 0)
 
     def _send(self, buf, cmd):
         self.busy = True
@@ -165,7 +169,8 @@ class App:
         self.d = Display()
         self.wlan = network.WLAN(network.STA_IF)
         self.wlan.active(True)
-        self.tasks = None    # None until the first successful fetch
+        self.tasks = []
+        self.loaded = False  # True after the first successful fetch
         self.selected = 0
         self.top = 0         # first task shown (for scrolling)
         self.status = ""
@@ -196,7 +201,7 @@ class App:
                 for n, line in enumerate(task.lines):
                     BODY.draw(d, line, TEXT_X, y + PAD + n * LINE_H, c)
                 y += task.height
-        elif self.tasks is not None:
+        elif self.loaded:
             HEADER.draw(d, "All done!", (WIDTH - HEADER.width("All done!")) // 2, 100)
         d.hline(0, FOOTER_Y, WIDTH, BLACK)
         SMALL.draw(d, self.status, 4, FOOTER_Y + 3)
@@ -246,6 +251,7 @@ class App:
         self.tasks = [make_task(task_id, content) for _, task_id, content in found]
         ids = [t.id for t in self.tasks]
         self.selected = ids.index(old_id) if old_id in ids else 0  # keep selection
+        self.loaded = True
         return "Updated: %d task%s" % (len(self.tasks), "" if len(self.tasks) == 1 else "s")
 
     def next_task(self):
